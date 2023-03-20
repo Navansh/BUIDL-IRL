@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ABI from "./contracts/ABI.json";
-import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
-import { NFTStorage } from "nft.storage";
 import { useNavigate } from "react-router-dom";
+import {NFTStorage} from "nft.storage";
+import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
 
 const CONTRACT_ADDRESS = "0xaC69B54765c9cb9770bD6A6F890E95ED640aB233";
 
@@ -13,21 +13,24 @@ const NFT = () => {
 	const [isFilePicked, setIsFilePicked] = useState(false);
 	const [isMinting, setIsMinting] = useState(false);
 
-	const navigate = useNavigate();
-
 	const { address } = useAccount();
-
 	const { data: signer } = useSigner();
-
 	const contract = useContract({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		signerOrProvider: signer,
+    address: CONTRACT_ADDRESS,
+    abi: ABI.abi,
+    signerOrProvider: signer,
 	});
+	const { data: supply } = useContractRead({
+    address: CONTRACT_ADDRESS,
+    abi: ABI.abi,
+    functionName: "totalSupply",
+	});
+
+	const client = new NFTStorage({ token: NFT_STORAGE_KEY });
+	const navigate = useNavigate();
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
-	const client = new NFTStorage({ token: NFT_STORAGE_KEY });
 
 	const changeHandler = event => {
 		setSelectedFile(event.target.files[0]);
@@ -42,31 +45,25 @@ const NFT = () => {
 		setDescription(event.target.value);
 	};
 
-	const { data: supply } = useContractRead({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		functionName: "totalSupply",
-	});
-
 	const uploadFile = () => {
 		setIsMinting(true);
 		client
 			.store({
 				name: title,
-				description,
+				description: description,
 				image: selectedFile,
 			})
 			.then(result => {
 				const ipfsUrl = result.url;
 				console.log("IPFS url:", ipfsUrl);
 				try {
-					contract.safeMint(address, ipfsUrl).then(res => {
+					contract.mintNFT(address, ipfsUrl).then(res => {
 						console.log(
 							"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
 								res.hash
 						);
 						setIsMinting(false);
-						navigate(`/gallery/${supply.toNumber()}`);
+						// navigate(`/gallery/${supply.toNumber()}`);
 					});
 				} catch (e) {
 					console.log(e);
@@ -77,6 +74,8 @@ const NFT = () => {
 				setIsMinting(false);
 			});
 	};
+	
+
 	return (
 		<div className="NFT__Container">
 			{isFilePicked ? (
@@ -131,11 +130,8 @@ const NFT = () => {
 					onChange={changeHandler}
 				/>
 				{isFilePicked && (
-					<button
-						disabled={isMinting}
-						className="btn"
-						onClick={uploadFile}
-					>
+					<button disabled={isMinting} className="btn" 
+					onClick={uploadFile}>
 						{isMinting ? (
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
