@@ -4,7 +4,7 @@ import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
 import { NFTStorage } from "nft.storage";
 import { useNavigate } from "react-router-dom";
 
-const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
+const CONTRACT_ADDRESS = "0xaC69B54765c9cb9770bD6A6F890E95ED640aB233";
 
 const NFT_STORAGE_KEY = import.meta.env.VITE_NFT_STORAGE_KEY;
 
