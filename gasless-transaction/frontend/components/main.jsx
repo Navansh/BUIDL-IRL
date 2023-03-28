@@ -6,8 +6,8 @@ import { ChainId } from "@biconomy/core-types";
 import SmartAccount from "@biconomy/smart-account";
 
 /// Importing the components
-import UnstakedNft from "./Modal/UnstakedNft";
-import StakedNft from "./Modal/StakedNft";
+import UnStakedNFT from "./Modal/UnStakedNFT";
+import StakedNFT from "./Modal/StakedNFT";
 import TokenBal from "./Modal/TokenBal";
 import Mint from "../pages/mint";
 
@@ -56,8 +56,8 @@ const Main = () => {
       {scwLoading && <h2>Loading Smart Account...</h2>}
       <h2>Smart Account Address: {scwAddress}</h2>
       <TokenBal smartAccount={smartAccount} />
-      <StakedNft smartAccount={smartAccount} />
-      <UnstakedNft smartAccount={smartAccount} />
+      <StakedNFT smartAccount={smartAccount} />
+      <UnStakedNFT smartAccount={smartAccount} />
       <Mint smartAccount={smartAccount} />
     </div>
   );
