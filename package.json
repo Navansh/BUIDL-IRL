@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@d11k-ts/client": "^0.1.5"
+  }
+}
